@@ -1,0 +1,42 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# 创建或更新 .gitignore 文件
+cat > .gitignore << 'EOF'
+# Maven
+target/
+*/target/
+*/*/target/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Logs
+logs/
+*.log
+
+# Temp files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Large files
+*.jar
+*.zip
+*.tar.gz
+*.war
+*.ear
+
+# Specific large file
+monkey-monitor/src/main/resources/lib/netsdk-1.0-demo.jar
+EOF
