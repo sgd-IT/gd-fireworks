@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.em.dao.DeviceDao">
+    <select id="getDeviceList" resultType="com.monkey.general.modules.em.entity.Device">
+        select * from em_device where id in (
+            select max(id) from em_device
+                where
+                    create_time &gt;= #{date} and
+                    num in
+                    <foreach collection="numList" separator="," open="(" close=")" item="item">
+                        #{item}
+                    </foreach>
+                    group by `code`
+        )
+    </select>
+</mapper>

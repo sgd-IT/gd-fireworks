@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.em.dao.DeviceModelDao">
+
+
+    <select id="selectVo" resultType="com.monkey.general.modules.em.dto.DeviceModelVo">
+
+        select a.*,b.device_system as deviceSystem,c.device_category as deviceCategory from em_device_model a
+      left join em_device_system b on b.id = a.affiliated_system
+      left join em_device_category c on c.id = a.device_type
+            ${ew.customSqlSegment}
+
+    </select>
+
+
+</mapper>

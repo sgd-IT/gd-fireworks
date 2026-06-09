@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.em.mapper.CameraMapper">
+    <select id="getInfos" resultType="com.monkey.general.modules.em.entity.vo.CameraVO">
+        select a.*,b.store_name as storeName from bz_camera a
+             LEFT JOIN em_warehouse b on b.id = a.warehouse_id
+            ${ew.customSqlSegment}
+    </select>
+</mapper>

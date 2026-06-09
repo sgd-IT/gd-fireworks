@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.sys.mapper.MenuMapper">
+
+	<select id="queryListParentId" resultType="com.monkey.general.modules.sys.entity.Menu">
+		select * from sys_menu where parent_id = #{parentId} order by order_num asc
+	</select>
+
+	<select id="queryNotButtonList" resultType="com.monkey.general.modules.sys.entity.Menu">
+		select * from sys_menu where category != 2 order by order_num asc
+	</select>
+
+</mapper>

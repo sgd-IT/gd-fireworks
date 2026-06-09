@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.em.mapper.DeviceYhInfoMapper">
+
+    <select id="selectPageLists" resultType="com.monkey.general.modules.em.entity.DeviceYhInfo">
+        select di.*,wh.store_name,sr.storeroom_name from em_device_info di
+         LEFT JOIN em_storeroom sr on di.storeroom_num = sr.storeroom_num
+         LEFT JOIN em_warehouse wh on di.store_num = wh.store_num
+        ${ew.customSqlSegment}
+    </select>
+
+</mapper>

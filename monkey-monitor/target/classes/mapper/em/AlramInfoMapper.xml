@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.em.mapper.AlramInfoMapper">
+    <update id="updateBatchIds">
+        update em_alram_info
+        set push_type = 1
+        where id in
+        <foreach item="item" collection="idList" separator="," close=")" open="(" index="index">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="selectPageLists" resultType="com.monkey.general.modules.em.entity.AlramInfo">
+        select ai.*,
+               wh.store_name,
+               sr.storeroom_name,
+               di.device_name,
+               u.real_name as processingPersonName,
+               u.id        as processingPerson
+        from em_alram_info ai
+                 LEFT JOIN em_storeroom sr on ai.storeroom_num = sr.storeroom_num
+                 LEFT JOIN em_warehouse wh on ai.store_num = wh.store_num
+                 LEFT JOIN em_device_info di on ai.device_code = di.device_code
+                 LEFT JOIN sys_user u on u.id = ai.processing_person
+            ${ew.customSqlSegment}
+    </select>
+
+
+    <select id="alarmAnalysis" resultType="com.monkey.general.modules.em.entity.dto.AlarmAnalysisDto">
+        SELECT t.alarm_type                                        AS alarmType,
+               CASE t.alarm_type
+                   WHEN 1 THEN '超员作业'
+                   WHEN 2 THEN '堵塞通道'
+                   WHEN 3 THEN '超高超量'
+                   WHEN 4 THEN '非法入侵'
+                   WHEN 5 THEN '摄像头遮挡偏移'
+                   END                                             AS alarmTypeName,
+               COALESCE(COUNT(CASE WHEN DATE_FORMAT(e.warning_date, '%Y-%m-%d') = CURDATE() THEN 1 END), 0) AS todaySum,
+               COUNT(CASE WHEN e.processing_status = 0 THEN 1 END) AS unDealSum,
+               COALESCE(SUM(CASE WHEN e.alarm_type = t.alarm_type THEN 1 ELSE 0 END), 0) AS totalSum
+        FROM (SELECT 1 AS alarm_type
+              UNION ALL
+              SELECT 2
+              UNION ALL
+              SELECT 3
+              UNION ALL
+              SELECT 4
+              UNION ALL
+              SELECT 5) t
+                 LEFT JOIN em_alram_info e
+                           ON t.alarm_type = e.alarm_type
+                               AND e.company_code = #{companyCode}
+
+
+        GROUP BY t.alarm_type, alarmTypeName
+        ORDER BY t.alarm_type;
+    </select>
+
+    <select id="videoMonitoring" resultType="com.monkey.general.modules.em.entity.vo.VideoMonitoringVo">
+        SELECT w.store_name                               AS `storeName`,
+               d.device_name                              AS `deviceName`,
+               CASE e.alarm_type
+                   WHEN 1 THEN '超员作业'
+                   WHEN 2 THEN '堵塞通道'
+                   WHEN 3 THEN '超高超量'
+                   WHEN 4 THEN '非法入侵'
+                   WHEN 5 THEN '摄像头遮挡偏移'
+                   ELSE '未知类型'
+                   END                                    AS `alarmType`,
+               e.alarm_file                               AS `alarmPic`,
+               e.warning_date                             AS `alarmStartTime`,
+               TIMESTAMPDIFF(HOUR, `warning_date`, NOW()) AS `duration`
+        FROM `em_alram_info` e
+                 left join em_device_info d on e.device_code = d.device_code
+                 left join em_warehouse w on w.store_num = d.store_num
+        WHERE e.processing_status = 0
+          AND e.company_code = #{companyCode}
+          AND e.warning_date >= CURDATE()
+          AND e.warning_date &lt; CURDATE() + INTERVAL 1 DAY
+        ORDER BY e.alarm_type;
+    </select>
+
+    <select id="alarmPushList" resultType="com.monkey.general.modules.em.entity.AlramInfo">
+        SELECT e.alarm_type as alarmType, e.id,
+               wh.store_name as storeName,
+               di.device_name as deviceName,
+               e.device_code as deviceCode
+        FROM em_alram_info  e
+         left join em_warehouse wh on e.store_num = wh.store_num and wh.company_code = e.company_code
+         left join em_device_info di on e.device_code = di.device_code and di.company_code = e.company_code
+        where e .company_code = #{companyCode}
+        and e.alarm_status = 0
+        ORDER BY e.warning_date desc;
+    </select>
+
+    <update id="updateBatch">
+            update em_alram_info set alarm_status = 1,gmt_modified = now() where company_code = #{companyCode}
+    </update>
+
+</mapper>

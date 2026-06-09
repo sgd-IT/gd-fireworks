@@ -1,0 +1,75 @@
+
+spring:
+  # 数据库相关
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.250.160:3306/anwei_mon_fireworks_local?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: t@m7Iici2i
+    #连接池配置
+    hikari:
+      minimum-idle: 10 #最小空闲连接数量，默认10
+      maximum-pool-size: 20 #最小连接数，默认10
+  # redis相关配置
+  redis:
+    open: false  # 是否开启redis缓存  true开启   false关闭
+    database: 4
+    host: 192.168.250.160
+    port: 6379
+    password:    # 密码（默认为空）
+    timeout: 6000ms  # 连接超时时长（毫秒）
+    jedis:
+      pool:
+        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1ms      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10      # 连接池中的最大空闲连接
+        min-idle: 5       # 连接池中的最小空闲连接
+  servlet:
+    multipart:
+      max-file-size: 10MB #上传文件最大值
+
+# 自定义配置
+monkey:
+  company_code: 1101012583
+  swagger:
+    enable: true #开启swagger
+  fileupload:
+    #上传文件保存路径
+    uploadPath: D:/upload
+    #文件访问域名
+    serverUrl: http://192.168.250.160:5566
+  #二维码
+  qr:
+    #保存的目录
+    save-dir: D:/upload/qrcode/
+    #图片站的域名
+    image-domain: http://192.168.250.160:8302/
+  #微信配置
+  wx:
+    #微信的appid
+    appid: wx6b7ceaa8d9a87338
+    appsecret: 161272424db506f2694fca16d53bc170
+    #获取code的scope
+    scope: snsapi_userinfo
+    #本网站api接口地址
+    web-api-domain: http://pdyfii.natappfree.cc/api
+  #数据同步服务端
+  data:
+    file:
+      path: D:/data/local/tmp
+    download:
+      address: http://192.168.250.160:9090/open/tableSync/download
+    network:
+      address: http://192.168.250.160:9090/local/data/network
+    upload:
+      realtime: http://192.168.250.160:9090/open/tableSync/upload
+      noNetwork: http://192.168.250.160:9090/local/data/upload/noNetwork
+hikang:
+  url:
+    token: https://api2.hik-cloud.com/oauth/token
+    videoUrl: https://api2.hik-cloud.com/v1/carrier/wing/endpoint/video/getVideoUrl
+    peopleUrl: https://api2.hik-cloud.com/api/v1/mq/consumer/messages
+    closeUrl: https://api2.hik-cloud.com/siot/video/api/standardStreams/actions/disableLiveAddress
+fire-work:
+  api:
+    table.sync-api-server: http://192.168.250.160:9090

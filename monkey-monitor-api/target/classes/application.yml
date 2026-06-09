@@ -1,0 +1,39 @@
+server:
+  port: 9900
+
+spring:
+  # 环境 dev|test|prod
+  profiles:
+    active: dev
+  # jackson时间格式化
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+
+#mybatis
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.monkey.general.modules.*.entity
+  global-config:
+    #数据库相关配置
+    db-config:
+      #主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID", ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: AUTO
+      logic-delete-field: validStatus # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+        #      logic-delete-value: -1
+        #      logic-not-delete-value: 0
+      logic-delete-value: 0
+      logic-not-delete-value: 1
+      meta-object-handler: com.monkey.general.handler.MyMetaObjectHandler
+    banner: false
+  #原生配置
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    call-setters-on-nulls: true
+    jdbc-type-for-null: 'null'
+    # 控制台打印sql
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

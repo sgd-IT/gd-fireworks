@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.em.mapper.HumidityMapper">
+
+    <select id="getPageVo" resultType="com.monkey.general.modules.em.entity.Humidity">
+        select hd.*, wh.store_name, sn.storeroom_name, di.device_name
+        from em_humidity hd
+                 left join em_warehouse wh on wh.store_num = hd.store_num
+                 left join em_storeroom sn on sn.storeroom_num = hd.storeroom_num
+                 left join em_device_info di on di.device_code = hd.device_code
+            ${ew.customSqlSegment}
+    </select>
+    <select id="findHumidityCount" resultType="com.monkey.general.modules.em.entity.vo.HumidityAndTemperatureVo">
+        SELECT device.device_code AS deviceCode,DATE_FORMAT(sync_time, '%H') AS timeValue, eh.real_value AS dataValue FROM em_humidity eh
+       left join em_device_info device on device.device_code = eh.device_code
+       JOIN (SELECT device_code,DATE_FORMAT(sync_time, '%Y-%m-%d %H:00:00') AS hour_start,MAX(sync_time) AS last_time_per_hour FROM em_humidity
+             WHERE company_code = #{companyCode} AND sync_time BETWEEN #{startTime} AND  #{endTime}
+             GROUP BY device_code,DATE_FORMAT(sync_time, '%Y-%m-%d %H:00:00')) grouped
+            ON device.device_code = grouped.device_code AND eh.sync_time = grouped.last_time_per_hour
+     ORDER BY eh.sync_time asc;
+    </select>
+
+</mapper>

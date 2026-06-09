@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.open.mapper.TableSyncMapper">
+    <update id="addFiled">
+        ALTER TABLE ${tableName} ADD ${filed} ${type} ${notNull} DEFAULT  <if test="nod == 0">${dft}</if> <if test="nod == 1">#{dft}</if> COMMENT #{comment}
+    </update>
+
+    <update id="saveOrUpdate">
+        insert into ${tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <foreach collection="dataMap.keySet()" item="key" separator=",">
+                <if test="dataMap[key] != null">${key}</if>
+            </foreach>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <foreach collection="dataMap.keySet()" item="key" separator=",">
+                <if test="dataMap[key] != null">#{dataMap[${key}]}</if>
+            </foreach>
+        </trim>
+        on duplicate key update
+        <trim suffixOverrides=",">
+            <foreach collection="dataMap.keySet()" item="key" separator=",">
+                <if test="dataMap[key] != null">${key} = #{dataMap[${key}]}</if>
+            </foreach>
+        </trim>
+    </update>
+
+    <select id="selectDatas" resultType="java.util.Map">
+        select * from ${tableName} where company_code = ${companyCode}
+        <if test="timesSet != null">
+            and
+            <foreach collection="timesSet" item="time" open="(" separator="or" close=")">
+                ${time} >= #{dataTime}
+            </foreach>
+        </if>
+    </select>
+
+
+    <select id="selectDatabyTime" resultType="java.util.Map">
+        select * from ${tableName}
+                 where (gmt_create between #{startTime} and #{endTime})
+                    or (gmt_modified between #{startTime} and #{endTime})
+    </select>
+
+
+    <update id="save">
+        insert into ${tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <foreach collection="dataMap.keySet()" item="key" separator=",">
+                <if test="dataMap[key] != null">${key}</if>
+            </foreach>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <foreach collection="dataMap.keySet()" item="key" separator=",">
+                <if test="dataMap[key] != null">#{dataMap[${key}]}</if>
+            </foreach>
+        </trim>
+    </update>
+
+    <update id="update">
+        update ${tableName}
+        <trim suffixOverrides=",">
+            <set>
+                <foreach collection="dataMap.keySet()" item="key" separator=",">
+                    <if test="dataMap[key] != null">${key} = #{dataMap[${key}]}</if>
+                </foreach>
+            </set>
+            where sync_id = #{syncId}
+        </trim>
+    </update>
+</mapper>

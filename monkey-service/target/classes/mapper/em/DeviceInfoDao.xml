@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.em.dao.DeviceInfoDao">
+
+    <select id="list" resultType="com.monkey.general.modules.em.entity.DeviceInfo">
+        select * from em_device_info i
+        left join em_device_system s on i.affiliated_system_id = s.id
+        where i.customer_id = #{customerId} and s.eng_id = #{engId}
+    </select>
+</mapper>

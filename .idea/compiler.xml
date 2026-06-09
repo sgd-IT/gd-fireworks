@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="xxl-job-core" />
+        <module name="monkey-monitor" />
+        <module name="monkey-code-generator" />
+        <module name="monkey-common" />
+        <module name="monkey-monitor-api" />
+        <module name="monkey-service" />
+        <module name="xxl-job-admin" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="monkey-admin-api" target="1.8" />
+      <module name="monkey-admin-core" target="1.8" />
+      <module name="monkey-security-core" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

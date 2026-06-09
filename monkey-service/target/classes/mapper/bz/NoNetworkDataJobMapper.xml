@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.bz.mapper.NoNetworkDataJobMapper">
+
+   <!-- <select id="selectMinTime" resultType="com.monkey.general.modules.bz.entity.NoNetworkDataJob">
+        select *,min(start_time) from  bz_no_network_data_job
+        where data_state = 0 group by table_name
+    </select>-->
+    <select id="selectMinTime" resultType="com.monkey.general.modules.bz.entity.NoNetworkDataJob">
+        SELECT t.* FROM bz_no_network_data_job t
+        INNER JOIN (
+            SELECT table_name, MIN(start_time) AS min_start_time
+            FROM bz_no_network_data_job
+            WHERE data_state = 0
+            GROUP BY table_name
+        ) t2 ON t.table_name = t2.table_name AND t.start_time = t2.min_start_time
+        WHERE t.data_state = 0
+    </select>
+
+</mapper>

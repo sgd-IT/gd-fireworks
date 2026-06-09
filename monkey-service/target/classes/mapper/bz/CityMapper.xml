@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.bz.mapper.CityMapper">
+
+    <select id="pageVO" resultType="com.monkey.general.modules.bz.dto.CityListVO">
+        SELECT p.city_name as parent_name,c.* FROM bz_city c
+              LEFT JOIN bz_city p on c.parent_id=p.id
+        ${ew.customSqlSegment}
+    </select>
+</mapper>

@@ -1,0 +1,117 @@
+package ${package}.${moduleName}.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.BeanUtils;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
+import ${mainPath}.admin.modules.base.BaseController;
+import ${mainPath}.common.utils.PageUtils;
+import ${mainPath}.common.validator.ValidatorUtils;
+import ${mainPath}.common.entity.ShowPageVo;
+import ${mainPath}.common.entity.ResponseDataVo;
+import ${package}.${moduleName}.entity.${className};
+import ${package}.${moduleName}.service.${className}Service;
+
+
+/**
+ * ${comments}
+ * @author ${author}
+ * @date ${datetime}
+ */
+@RestController
+@Api(tags = "${comments}")
+@RequestMapping("/${moduleName}/${classname}")
+public class ${className}Controller extends BaseController {
+    @Autowired
+    private ${className}Service ${classname}Service;
+
+    /**
+     * 列表
+     */
+    @GetMapping("/list")
+    @ApiOperation("列表")
+    @PreAuthorize("hasAuthority('${moduleName}:${classname}:list')")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "当前页码", required = true, dataType = "Long", paramType = "query"),
+            @ApiImplicitParam(name = "limit", value = "每页数据条数", required = true, dataType = "Long", paramType = "query"),
+            @ApiImplicitParam(name = "key", value = "参数名", required = false, dataType = "String", paramType = "query")
+    })
+    public ResponseDataVo<ShowPageVo<${className}>> list(@RequestParam Long page, @RequestParam Long limit, String key) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("page", page);
+        params.put("limit", limit);
+        params.put("key", key);
+
+        PageUtils p = ${classname}Service.queryPage(params);
+        ShowPageVo<${className}> pageVo = new ShowPageVo<>();
+        BeanUtils.copyProperties(p, pageVo);
+
+        return ResponseDataVo.successResponse(pageVo);
+    }
+
+
+    /**
+     * 信息
+     */
+    @ApiOperation("信息")
+    @GetMapping("/info/{${pk.attrname}}")
+    @PreAuthorize("hasAuthority('${moduleName}:${classname}:info')")
+    @ApiImplicitParam(name = "${pk.attrname}", value = "主键${pk.attrname}", required = true, dataType = "Long", paramType = "path")
+    public ResponseDataVo<${className}> info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}) {
+        ${className} ${classname} =${classname}Service.getById(${pk.attrname});
+        return ResponseDataVo.successResponse(${classname});
+    }
+
+    /**
+     * 保存
+     */
+    @PostMapping("/save")
+    @ApiOperation("保存")
+    @PreAuthorize("hasAuthority('${moduleName}:${classname}:save')")
+    public ResponseDataVo save(@RequestBody ${className} ${classname}) {
+        ValidatorUtils.validateEntity(${classname});
+
+        ${classname}Service.save(${classname});
+
+        return ResponseDataVo.successResponse();
+    }
+
+    /**
+     * 修改
+     */
+    @ApiOperation("修改")
+    @PostMapping("/update")
+    @PreAuthorize("hasAuthority('${moduleName}:${classname}:update')")
+    public ResponseDataVo update(@RequestBody ${className} ${classname}) {
+        ValidatorUtils.validateEntity(${classname});
+
+        ${classname}Service.updateById(${classname});
+
+        return ResponseDataVo.successResponse();
+    }
+
+    /**
+     * 删除
+     */
+    @ApiOperation("删除")
+    @PostMapping("/delete")
+    @PreAuthorize("hasAuthority('${moduleName}:${classname}:delete')")
+    @ApiImplicitParam(name = "${pk.attrname}s", value = "主键${pk.attrname}集合", required = true, dataType = "Long[]")
+    public ResponseDataVo delete(@RequestBody ${pk.attrType}[] ${pk.attrname}s) {
+
+        ${classname}Service.removeByIds(Arrays.asList(${pk.attrname}s));
+
+        return ResponseDataVo.successResponse();
+    }
+
+}

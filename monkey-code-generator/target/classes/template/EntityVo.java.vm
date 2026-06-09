@@ -1,0 +1,10 @@
+package ${package}.${moduleName}.entity.addtion;
+
+
+
+/**
+ * ${comments}
+ */
+public class ${className}Vo extends ${className} {
+
+}

@@ -1,0 +1,16 @@
+-- 菜单SQL
+INSERT INTO `sys_menu` (`parent_id`, `menu_name`, `url`, `permission`, `category`, `icon`, `order_num`, `gmt_create`)
+    VALUES ('1', '${comments}', '${moduleName}/${classname}', NULL, '1', 'config', '6', NOW());
+
+-- 按钮父菜单ID
+set @parentId = @@identity;
+
+-- 菜单对应按钮SQL
+INSERT INTO `sys_menu` (`parent_id`, `menu_name`, `url`, `permission`, `category`, `icon`, `order_num`, `gmt_create`)
+    SELECT @parentId, '查看', null, '${moduleName}:${classname}:list,${moduleName}:${classname}:info', '2', null, '6', NOW();
+INSERT INTO `sys_menu` (`parent_id`, `menu_name`, `url`, `permission`, `category`, `icon`, `order_num`, `gmt_create`)
+    SELECT @parentId, '新增', null, '${moduleName}:${classname}:save', '2', null, '6', NOW();
+INSERT INTO `sys_menu` (`parent_id`, `menu_name`, `url`, `permission`, `category`, `icon`, `order_num`, `gmt_create`)
+    SELECT @parentId, '修改', null, '${moduleName}:${classname}:update', '2', null, '6', NOW();
+INSERT INTO `sys_menu` (`parent_id`, `menu_name`, `url`, `permission`, `category`, `icon`, `order_num`, `gmt_create`)
+    SELECT @parentId, '删除', null, '${moduleName}:${classname}:delete', '2', null, '6', NOW();

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--颜色-->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+
+    <!-- 输出格式 -->
+    <property name="CONSOLE_PATTERN" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) %clr(%-5level) %clr(${PID:- }){magenta} --- [%thread] %clr(%c){cyan} %clr([%L]){blue} -||- %msg%n" />
+    <property name="FILE_PATTERN" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) %-5level ${PID} --- [%thread] %c [%L] -||- %msg%n" />
+
+    <!-- prod文件路径 -->
+    <property name="PROD_FILE_PATH" value="D:/logs/info-system/monkey-monitor-fireworks-local" />
+    <!--输出到控制台-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!--级别过滤器，根据日志级别进行过滤。如果日志级别等于配置级别，过滤器会根据onMath 和 onMismatch接收或拒绝日志。有以下子节点：;-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 生产环境控制台只输出error -->
+            <springProfile name="prod">
+                <level>ERROR</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </springProfile>
+        </filter>
+        <!--输出的文件格式-->
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+
+        </encoder>
+    </appender>
+
+    <!-- info：输出到文件 -->
+    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--控制只输出INFO级别的日志-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!--日志文件-->
+        <file>${PROD_FILE_PATH}/info.log</file>
+        <!--日志文件保存规则-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${PROD_FILE_PATH}/%d{yyyy-MM, aux}/info.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--日志文件保留天数，0标示没有限制-->
+            <maxHistory>0</maxHistory>
+        </rollingPolicy>
+        <!--输出的文件格式-->
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+
+        </encoder>
+    </appender>
+
+    <!-- warn：输出到文件 -->
+    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--控制只输出INFO级别的日志-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!--日志文件-->
+        <file>${PROD_FILE_PATH}/warn.log</file>
+        <!--日志文件保存规则-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${PROD_FILE_PATH}/%d{yyyy-MM, aux}/warn.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--日志文件保留天数，0标示没有限制-->
+            <maxHistory>0</maxHistory>
+        </rollingPolicy>
+        <!--输出的文件格式-->
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+
+        </encoder>
+    </appender>
+
+
+    <!-- error：输出到文件 -->
+    <appender name="ERROR-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--控制只输出ERROR级别的日志，如果不配置就记录所有级别-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!--日志文件-->
+        <file>${PROD_FILE_PATH}/error.log</file>
+        <!--日志文件保存规则-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--历史文件按照月归集-->
+            <fileNamePattern>${PROD_FILE_PATH}/%d{yyyy-MM, aux}/error.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--日志文件保留天数，0标示没有限制-->
+            <maxHistory>0</maxHistory>
+        </rollingPolicy>
+        <!--输出的文件格式-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_PATTERN}</pattern>
+
+        </encoder>
+    </appender>
+
+
+
+    <!-- 开发环境 -->
+    <springProfile name="dev">
+
+        <!--这个配置是针对某个组件的日志级别，根据实际情况配置，开启可以打印sql-->
+        <logger name="com.monkey.general" level="DEBUG"/>
+
+        <!--level指定的是默认的日志级别-->
+        <root level="INFO">
+            <!--这里指向的是appender的name-->
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="INFO_FILE" />
+            <appender-ref ref="WARN_FILE" />
+            <appender-ref ref="ERROR-FILE" />
+        </root>
+    </springProfile>
+
+    <!--生产环境-->
+    <springProfile name="prod">
+
+        <!--这个配置是针对某个组件的日志级别，根据实际情况配置-->
+        <!--<logger name="com.monkey.general" level="INFO"/>-->
+
+        <!--level指定的是默认的日志级别-->
+        <root level="INFO">
+            <!--这里指向的是appender的name-->
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="INFO_FILE" />
+            <appender-ref ref="WARN_FILE" />
+            <appender-ref ref="ERROR-FILE" />
+        </root>
+    </springProfile>
+
+    <!-- 测试环境 -->
+    <springProfile name="test">
+
+        <!--这个配置是针对某个组件的日志级别，根据实际情况配置-->
+        <logger name="com.monkey.general" level="INFO"/>
+
+        <!--level指定的是默认的日志级别-->
+        <root level="INFO">
+            <!--这里指向的是appender的name-->
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="INFO_FILE" />
+            <appender-ref ref="WARN_FILE" />
+            <appender-ref ref="ERROR-FILE" />
+        </root>
+    </springProfile>
+
+</configuration>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.em.mapper.EarlyWarningInfoPushRecordMapper">
+    <update id="updateBatchIds">
+        update em_early_warning_info_push_record
+        set local_push_type = 1
+        where id in
+        <foreach item="item" collection="idList" separator="," close=")" open="(" index="index">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

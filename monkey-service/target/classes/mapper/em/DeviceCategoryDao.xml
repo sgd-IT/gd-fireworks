@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.monkey.general.modules.em.dao.DeviceCategoryDao">
+
+    <select id="selectVo" resultType="com.monkey.general.modules.em.dto.DeviceCategoryViewModel">
+        select a.*,b.device_system as deviceSystem from em_device_category a
+        left join em_device_system b on b.id = a.affiliated_system
+            ${ew.customSqlSegment}
+    </select>
+
+
+    <select id="selectVoSnum" resultType="com.monkey.general.modules.em.dto.DeviceCategoryViewModel">
+        select a.*,b.device_system as deviceSystem from em_device_category a
+        left join em_device_system b on b.id = a.affiliated_system
+            ${ew.customSqlSegment}
+    </select>
+</mapper>
